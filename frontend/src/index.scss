@@ -1,0 +1,35 @@
+// Import Carbon Design System styles
+@use '@carbon/react';
+
+// Custom global styles
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: 'IBM Plex Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+// Custom utility classes
+.full-height {
+  height: 100%;
+}
+
+.spacing-03 {
+  margin-bottom: 0.5rem;
+}
+
+.spacing-05 {
+  margin-bottom: 1rem;
+}
+
+.spacing-07 {
+  margin-bottom: 2rem;
+}

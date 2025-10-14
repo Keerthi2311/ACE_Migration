@@ -1,0 +1,27 @@
+@use '@carbon/react';
+
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--cds-background);
+}
+
+.content-wrapper {
+  padding: 2rem 0;
+  min-height: calc(100vh - 12rem);
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: 2rem 0;
+  background-color: var(--cds-layer-01);
+  border-top: 1px solid var(--cds-border-subtle-01);
+}
+
+.footer-text {
+  margin: 0;
+  text-align: center;
+  color: var(--cds-text-secondary);
+  font-size: 0.875rem;
+}
