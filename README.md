@@ -60,8 +60,9 @@ The IBM ACE Migration Estimator is an intelligent tool designed to accurately es
 ### 📊 Comprehensive Estimation
 - **Multi-Phase Breakdown**: Analysis, Design, Development, Testing, Deployment
 - **Environment Considerations**: DEV, QA, UAT, PROD configurations
-- **Infrastructure Factors**: VMware, Bare Metal, Cloud, Containers
-- **Team Band Adjustments**: 6G vs 6B/8/9/10 band calculations
+- **Infrastructure Factors**: On-Premise, Cloud, Container, Mainframe
+- **Universal Rate Calculation**: 5 flows per 2 days with dynamic buffer scaling
+- **Complexity Multipliers**: Legacy source (+15%), Mainframe (+20%), Custom plugins (+10%)
 
 ### 🎨 Modern User Interface
 - **IBM Carbon Design System**: Professional, accessible UI components
@@ -421,7 +422,7 @@ Content-Type: application/json
 
 #### Find Similar Projects
 ```http
-GET /api/insights/similar-projects?source_version=IIB_v10&target_version=ACE_v12&flow_count=150&infrastructure=vmware
+GET /api/insights/similar-projects?source_version=IIB_v10&target_version=ACE_v12&flow_count=150&infrastructure=on_premise
 ```
 
 #### Risk Assessment

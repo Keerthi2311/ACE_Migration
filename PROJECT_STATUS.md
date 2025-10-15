@@ -221,8 +221,10 @@ frontend/
 - Rules-based baseline calculations
 - Multi-phase breakdown (5 phases)
 - Environment complexity factors
-- Infrastructure adjustments
-- Team band considerations
+- Infrastructure adjustments (on-premise, cloud, container, mainframe)
+- Universal rate: 5 flows per 2 days
+- Dynamic buffer scaling (5-8 days based on project size)
+- Complexity multipliers (legacy source, mainframe, custom plugins)
 - MQ topology analysis
 
 ### 4. Comprehensive Reporting
