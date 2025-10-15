@@ -76,10 +76,11 @@ class APIService {
 
   async quickEstimate(params: {
     flow_count: number;
-    team_band: string;
     env_count: number;
     infrastructure: string;
     has_mq: boolean;
+    source_version?: string;
+    host_platform?: string;
   }): Promise<any> {
     const response = await this.client.get('/api/estimation/quick-estimate', {
       params,
@@ -112,7 +113,6 @@ class APIService {
 
   async getInsights(params: {
     flow_count: number;
-    team_band: string;
     has_custom_plugins: boolean;
   }): Promise<InsightCard[]> {
     const response = await this.client.get('/api/insights/insights', { params });

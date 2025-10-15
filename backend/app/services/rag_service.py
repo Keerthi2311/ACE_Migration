@@ -319,8 +319,7 @@ class RAGService:
             'target_version': questionnaire.get('target_environment', {}).get('product_version'),
             'flow_count': questionnaire.get('source_environment', {}).get('total_flows'),
             'infrastructure': questionnaire.get('target_environment', {}).get('host_platform'),
-            'has_mq': questionnaire.get('source_environment', {}).get('has_mq'),
-            'team_band': questionnaire.get('general_info', {}).get('team_band')
+            'has_mq': questionnaire.get('source_environment', {}).get('has_mq')
         }
         
         # Get similar projects

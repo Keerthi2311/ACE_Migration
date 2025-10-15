@@ -6,23 +6,20 @@ IBM ACE migration time from WMB/IIB to ACE.
 
 All formulas are based on validated business rules and must be
 implemented exactly as specified.
+
+CRITICAL: Team band has been REMOVED from all calculations.
+Estimation is based purely on flow count, environment configuration,
+infrastructure complexity, and project-specific factors.
 """
 
 from typing import Dict, List, Optional
 from enum import Enum
 
 
-class TeamBand(str, Enum):
-    """Team band classification affecting estimation"""
-    BAND_6G = "6G"
-    BAND_OTHER = "6B_8_9_10"
-
-
 class Infrastructure(str, Enum):
     """Infrastructure type for target environment"""
     CONTAINER = "container"
-    VMWARE = "vmware"
-    BARE_METAL = "bare_metal"
+    ON_PREMISE = "on_premise"
     CLOUD = "cloud"
 
 
@@ -52,47 +49,31 @@ class RulesEngine:
     }
     
     @staticmethod
-    def calculate_flow_migration_time(
-        flow_count: int,
-        team_band: str
-    ) -> Dict[str, float]:
+    def calculate_migration_execution_time(flow_count: int) -> Dict[str, float]:
         """
-        Calculate flow migration time based on team band.
+        Calculate migration execution time (migration + testing).
         
-        Rules:
-        - Band 6G: 10 days per 50 flows (0.2 days per flow)
-        - Other bands: 5 days per 50 flows (0.1 days per flow)
-        - Buffer: 6 days per 50 flows for unforeseen issues
+        Universal rate: 5 flows per 2 days
+        NO team band adjustment
+        
+        Day 1: Deploy 5 flows, initial testing
+        Day 2: Integration testing, fix issues, documentation
         
         Args:
-            flow_count: Total number of flows to migrate
-            team_band: Team band classification (6G or other)
+            flow_count: Total number of flows
             
         Returns:
-            Dictionary with base_time, buffer, and total
+            Dictionary with execution time and breakdown
         """
-        # Determine days per flow based on team band
-        if team_band == TeamBand.BAND_6G:
-            days_per_flow = 0.2
-        else:
-            days_per_flow = 0.1
-        
-        # Calculate base migration time
-        base_time = flow_count * days_per_flow
-        
-        # Calculate buffer (6 days per 50 flows)
-        buffer = (flow_count // 50) * 6
-        if flow_count % 50 > 0:  # Add buffer for remaining flows
-            buffer += 6
-        
-        total = base_time + buffer
+        # Universal rate: 5 flows per 2 days = 0.4 days per flow
+        time = (flow_count / 5.0) * 2.0
         
         return {
-            "base_time": round(base_time, 2),
-            "buffer": round(buffer, 2),
-            "total": round(total, 2),
+            "total": round(time, 2),
             "flows": flow_count,
-            "team_band": team_band
+            "flows_per_batch": 5,
+            "days_per_batch": 2,
+            "rate_description": "Universal rate: 5 flows per 2 days"
         }
     
     @staticmethod
@@ -111,7 +92,7 @@ class RulesEngine:
         
         Args:
             env_count: Number of environments to set up
-            infrastructure: Infrastructure type (container, vmware, etc.)
+            infrastructure: Infrastructure type (container, on_premise, cloud, etc.)
             has_mq: Whether MQ is required
             
         Returns:
@@ -165,29 +146,115 @@ class RulesEngine:
         """
         Calculate migration execution time (migration + testing).
         
-        Rules:
-        - 5 flows per 2 days (includes migration + testing)
+        Universal rate: 5 flows per 2 days
+        NO team band adjustment
+        
+        Day 1: Deploy 5 flows, initial testing
+        Day 2: Integration testing, fix issues, documentation
         
         Args:
             flow_count: Total number of flows
             
         Returns:
-            Dictionary with execution time
+            Dictionary with execution time and breakdown
         """
-        # 5 flows per 2 days = 0.4 days per flow
-        time = (flow_count / 5) * 2
+        # Universal rate: 5 flows per 2 days = 0.4 days per flow
+        time = (flow_count / 5.0) * 2.0
         
         return {
             "total": round(time, 2),
             "flows": flow_count,
             "flows_per_batch": 5,
-            "days_per_batch": 2
+            "days_per_batch": 2,
+            "rate_description": "Universal rate: 5 flows per 2 days"
+        }
+    
+    @staticmethod
+    def calculate_buffer(
+        flow_count: int,
+        has_custom_plugins: bool = False,
+        legacy_source: bool = False,
+        mainframe_source: bool = False,
+        many_external_systems: bool = False
+    ) -> Dict[str, float]:
+        """
+        Calculate project buffer based on size and complexity.
+        NO team band consideration.
+        
+        Base buffer scales with project size:
+        - < 50 flows: 5 days
+        - < 150 flows: 6 days
+        - < 300 flows: 7 days
+        - >= 300 flows: 8 days
+        
+        Complexity multiplier (1.0 to 1.5):
+        - Custom plugins: +0.1
+        - Legacy source (WMB v6/v7): +0.15
+        - Mainframe: +0.2
+        - Many external systems (>5): +0.1
+        
+        Args:
+            flow_count: Total number of flows
+            has_custom_plugins: Whether custom plugins exist
+            legacy_source: Whether source is WMB v6/v7
+            mainframe_source: Whether source is mainframe
+            many_external_systems: Whether >5 external systems
+            
+        Returns:
+            Dictionary with buffer calculation
+        """
+        # Base buffer by project size
+        if flow_count < 50:
+            base_buffer = 5
+        elif flow_count < 150:
+            base_buffer = 6
+        elif flow_count < 300:
+            base_buffer = 7
+        else:
+            base_buffer = 8
+        
+        # Complexity multiplier
+        complexity_multiplier = 1.0
+        complexity_factors = []
+        
+        if has_custom_plugins:
+            complexity_multiplier += 0.1
+            complexity_factors.append("Custom plugins: +10%")
+        
+        if legacy_source:
+            complexity_multiplier += 0.15
+            complexity_factors.append("Legacy source (WMB v6/v7): +15%")
+        
+        if mainframe_source:
+            complexity_multiplier += 0.2
+            complexity_factors.append("Mainframe source: +20%")
+        
+        if many_external_systems:
+            complexity_multiplier += 0.1
+            complexity_factors.append("Many external systems (>5): +10%")
+        
+        # Cap at 1.5x
+        complexity_multiplier = min(complexity_multiplier, 1.5)
+        
+        total_buffer = base_buffer * complexity_multiplier
+        
+        return {
+            "base_buffer": base_buffer,
+            "complexity_multiplier": round(complexity_multiplier, 2),
+            "total": round(total_buffer, 2),
+            "complexity_factors": complexity_factors
         }
     
     @staticmethod
     def get_fixed_components() -> Dict[str, float]:
         """
         Get fixed component times.
+        NO team band factor.
+        
+        UAT Support: 10 days (2 weeks)
+        Go-live Support: 5 days (1 week)
+        Knowledge Transfer: 5 days (1 week)
+        Total: 20 days
         
         Returns:
             Dictionary with UAT support, go-live support, and KT times
@@ -203,6 +270,7 @@ class RulesEngine:
     ) -> Dict[str, float]:
         """
         Calculate complexity multiplier for additional factors.
+        NO team band consideration.
         
         Args:
             has_custom_plugins: Whether custom plugins exist
@@ -241,11 +309,12 @@ class RulesEngine:
     @staticmethod
     def calculate_total_estimate(
         flow_count: int,
-        team_band: str,
         env_count: int,
         infrastructure: str,
         has_mq: bool,
         setup_status: str,
+        source_version: str = "",
+        host_platform: str = "",
         has_custom_plugins: bool = False,
         custom_plugin_count: int = 0,
         integration_protocol_count: int = 0,
@@ -254,13 +323,18 @@ class RulesEngine:
         """
         Master calculation combining all rules.
         
+        NO TEAM BAND IN CALCULATION
+        
+        Total = Environment Setup + Target Config + Migration Execution + Buffer + Fixed(20)
+        
         Args:
             flow_count: Total number of flows
-            team_band: Team band classification
             env_count: Number of environments
             infrastructure: Infrastructure type
             has_mq: Whether MQ is required
             setup_status: Target setup status
+            source_version: Source product version (for legacy detection)
+            host_platform: Source host platform (for mainframe detection)
             has_custom_plugins: Whether custom plugins exist
             custom_plugin_count: Number of custom plugins
             integration_protocol_count: Number of integration protocols
@@ -270,10 +344,6 @@ class RulesEngine:
             Complete estimation breakdown with all components
         """
         # Calculate each component
-        flow_migration = RulesEngine.calculate_flow_migration_time(
-            flow_count, team_band
-        )
-        
         env_setup = RulesEngine.calculate_environment_setup_time(
             env_count, infrastructure, has_mq
         )
@@ -282,6 +352,19 @@ class RulesEngine:
         
         migration_execution = RulesEngine.calculate_migration_execution_time(
             flow_count
+        )
+        
+        # Detect complexity factors
+        legacy_source = source_version in ['WMB_v6', 'WMB_v7']
+        mainframe_source = host_platform == 'mainframe'
+        many_external_systems = external_system_count > 5
+        
+        buffer = RulesEngine.calculate_buffer(
+            flow_count,
+            has_custom_plugins,
+            legacy_source,
+            mainframe_source,
+            many_external_systems
         )
         
         fixed_components = RulesEngine.get_fixed_components()
@@ -293,37 +376,31 @@ class RulesEngine:
             external_system_count
         )
         
-        # Calculate base total
-        base_total = (
-            flow_migration["total"] +
+        # Calculate total
+        total_days = (
             env_setup["total"] +
             target_setup["total"] +
             migration_execution["total"] +
+            buffer["total"] +
             sum(fixed_components.values())
         )
         
-        # Apply complexity multiplier
-        adjusted_total = base_total * complexity["multiplier"]
-        
         return {
             "breakdown": {
-                "flow_migration": flow_migration,
                 "environment_setup": env_setup,
                 "target_setup": target_setup,
                 "migration_execution": migration_execution,
+                "buffer": buffer,
                 "fixed_components": fixed_components,
                 "complexity": complexity
             },
             "totals": {
-                "base_days": round(base_total, 2),
-                "complexity_adjustment": round(adjusted_total - base_total, 2),
-                "total_days": round(adjusted_total, 2),
-                "total_weeks": round(adjusted_total / 5, 2),
-                "total_months": round(adjusted_total / 22, 2)
+                "total_days": round(total_days, 2),
+                "total_weeks": round(total_days / 5, 2),
+                "total_months": round(total_days / 22, 2)
             },
             "summary": {
                 "flow_count": flow_count,
-                "team_band": team_band,
                 "environment_count": env_count,
                 "infrastructure": infrastructure,
                 "has_mq": has_mq,
@@ -334,14 +411,15 @@ class RulesEngine:
 
 # Example usage and validation
 if __name__ == "__main__":
-    # Test case: 100 flows, Band 6G, 4 environments, container, with MQ
+    # Test case: 150 flows, 4 environments, container, with MQ
     result = RulesEngine.calculate_total_estimate(
-        flow_count=100,
-        team_band="6G",
+        flow_count=150,
         env_count=4,
         infrastructure="container",
         has_mq=True,
         setup_status="new",
+        source_version="IIB_v10",
+        host_platform="on_premise",
         has_custom_plugins=True,
         custom_plugin_count=3,
         integration_protocol_count=5,

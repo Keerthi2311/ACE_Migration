@@ -25,8 +25,7 @@ async def add_custom_project():
         "source_version": "IIB_v10",       # Source version
         "target_version": "ACE_v12",       # Target version
         "flow_count": 85,                  # Number of flows
-        "team_band": "6B_8_9_10",         # Team band
-        "infrastructure": "vmware",        # Infrastructure type
+        "infrastructure": "on_premise",    # Infrastructure type
         "has_mq": True,                    # Has MQ?
         "has_custom_plugins": False,       # Has custom plugins?
         
@@ -66,7 +65,7 @@ async def add_custom_project():
             'source_version': 'IIB_v10',
             'target_version': 'ACE_v12',
             'flow_count': 90,
-            'infrastructure': 'vmware'
+            'infrastructure': 'on_premise'
         },
         top_k=3
     )

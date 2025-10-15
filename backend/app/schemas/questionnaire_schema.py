@@ -21,8 +21,7 @@ class ProductVersion(str, Enum):
 
 class HostPlatform(str, Enum):
     """Host platform enum"""
-    VMWARE = "vmware"
-    BARE_METAL = "bare_metal"
+    ON_PREMISE = "on_premise"
     CLOUD = "cloud"
     MAINFRAME = "mainframe"
     CONTAINER = "container"
@@ -34,10 +33,7 @@ class MigrationType(str, Enum):
     IN_PLACE = "in_place"
 
 
-class TeamBand(str, Enum):
-    """Team band classification"""
-    BAND_6G = "6G"
-    BAND_OTHER = "6B_8_9_10"
+# Environment Information Schema
 
 
 # MQ Details Schema
@@ -115,7 +111,6 @@ class GeneralInfoSchema(BaseModel):
     customer_performs_testing: bool = Field(..., description="Will customer perform testing?")
     testing_approach: List[str] = Field(default_factory=list, description="Testing approaches")
     ibm_assistance_needed: List[str] = Field(default_factory=list, description="IBM assistance needed")
-    team_band: TeamBand = Field(..., description="Team band classification")
 
 
 # Complete Questionnaire Schema

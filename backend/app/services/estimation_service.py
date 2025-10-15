@@ -48,23 +48,21 @@ class EstimationService:
         # Check completeness
         required_fields = [
             'total_flows',
-            'team_band',
             'env_count',
             'infrastructure',
             'has_mq'
         ]
         
         flow_count = source.get('total_flows', 0)
-        team_band = general.get('team_band')
         env_count = len(target.get('environments', []))
         infrastructure = target.get('host_platform')
         has_mq = source.get('has_mq', False)
+        source_version = source.get('product_version', '')
+        host_platform = source.get('host_platform', '')
         
         missing_fields = []
         if not flow_count:
             missing_fields.append('total_flows')
-        if not team_band:
-            missing_fields.append('team_band')
         if not env_count:
             missing_fields.append('environments')
         if not infrastructure:
@@ -74,11 +72,12 @@ class EstimationService:
         if not missing_fields:
             estimate = self.rules_engine.calculate_total_estimate(
                 flow_count=flow_count,
-                team_band=team_band,
                 env_count=env_count,
                 infrastructure=infrastructure,
                 has_mq=has_mq,
                 setup_status='new',  # Default for live estimate
+                source_version=source_version,
+                host_platform=host_platform,
                 has_custom_plugins=source.get('has_custom_plugins', False),
                 custom_plugin_count=len(source.get('custom_plugin_details', '')),
                 integration_protocol_count=len(source.get('integration_protocols', [])),
@@ -153,11 +152,12 @@ class EstimationService:
         # Calculate base estimate
         base_estimate = self.rules_engine.calculate_total_estimate(
             flow_count=source.get('total_flows'),
-            team_band=general.get('team_band'),
             env_count=len(target.get('environments', [])),
             infrastructure=target.get('host_platform'),
             has_mq=source.get('has_mq', False),
             setup_status='new' if target.get('product_installation_needed') else 'configured',
+            source_version=source.get('product_version', ''),
+            host_platform=source.get('host_platform', ''),
             has_custom_plugins=source.get('has_custom_plugins', False),
             custom_plugin_count=len(source.get('custom_plugin_details', '')) if source.get('custom_plugin_details') else 0,
             integration_protocol_count=len(source.get('integration_protocols', [])),
@@ -171,8 +171,7 @@ class EstimationService:
             'flow_count': source.get('total_flows'),
             'infrastructure': target.get('host_platform'),
             'has_mq': source.get('has_mq'),
-            'has_custom_plugins': source.get('has_custom_plugins'),
-            'team_band': general.get('team_band')
+            'has_custom_plugins': source.get('has_custom_plugins')
         }
         
         # Get RAG insights

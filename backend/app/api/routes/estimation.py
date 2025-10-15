@@ -70,13 +70,15 @@ async def generate_report(questionnaire: QuestionnaireSchema):
 @router.get("/quick-estimate")
 async def quick_estimate(
     flow_count: int = Query(..., ge=1, description="Number of flows"),
-    team_band: str = Query(..., description="Team band (6G or 6B_8_9_10)"),
     env_count: int = Query(..., ge=1, description="Number of environments"),
     infrastructure: str = Query(..., description="Infrastructure type"),
-    has_mq: bool = Query(False, description="Has MQ?")
+    has_mq: bool = Query(False, description="Has MQ?"),
+    source_version: str = Query("", description="Source product version"),
+    host_platform: str = Query("", description="Source host platform")
 ):
     """
     Quick estimation endpoint for basic calculations.
+    NO TEAM BAND - uses universal rate for all projects.
     """
     try:
         from app.core.rules_engine import RulesEngine
@@ -85,11 +87,12 @@ async def quick_estimate(
         
         estimate = rules_engine.calculate_total_estimate(
             flow_count=flow_count,
-            team_band=team_band,
             env_count=env_count,
             infrastructure=infrastructure,
             has_mq=has_mq,
-            setup_status='new'
+            setup_status='new',
+            source_version=source_version,
+            host_platform=host_platform
         )
         
         return {

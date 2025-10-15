@@ -259,7 +259,7 @@ class Constants:
     
     # Infrastructure types
     INFRASTRUCTURE_TYPES = [
-        "vmware", "bare_metal", "cloud", "container", "mainframe"
+        "on_premise", "cloud", "container", "mainframe"
     ]
     
     # Integration protocols
@@ -273,9 +273,6 @@ class Constants:
         "database", "mq", "sap", "rest_api", "soap_api",
         "mainframe", "file_system", "cloud_service", "erp"
     ]
-    
-    # Team bands
-    TEAM_BANDS = ["6G", "6B_8_9_10"]
     
     # Migration drivers
     MIGRATION_DRIVERS = [

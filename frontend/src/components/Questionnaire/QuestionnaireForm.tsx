@@ -62,7 +62,6 @@ export default function QuestionnaireForm({ onComplete }: QuestionnaireFormProps
         customer_performs_testing: false,
         testing_approach: [],
         ibm_assistance_needed: [],
-        team_band: '6B_8_9_10',
       },
     },
   });
@@ -121,7 +120,6 @@ export default function QuestionnaireForm({ onComplete }: QuestionnaireFormProps
         );
       case 2:
         return (
-          formData.general_info?.team_band &&
           formData.general_info?.migration_drivers?.length > 0
         );
       default:

@@ -22,7 +22,6 @@ SAMPLE_PROJECTS = [
         "source_version": "IIB_v10",
         "target_version": "ACE_v12",
         "flow_count": 100,
-        "team_band": "6B_8_9_10",
         "infrastructure": "container",
         "has_mq": True,
         "has_custom_plugins": True,
@@ -42,8 +41,7 @@ SAMPLE_PROJECTS = [
         "source_version": "IIB_v9",
         "target_version": "ACE_v11",
         "flow_count": 75,
-        "team_band": "6G",
-        "infrastructure": "vmware",
+        "infrastructure": "on_premise",
         "has_mq": True,
         "has_custom_plugins": False,
         "estimated_days": 42,
@@ -61,7 +59,6 @@ SAMPLE_PROJECTS = [
         "source_version": "WMB_v8",
         "target_version": "ACE_v12",
         "flow_count": 150,
-        "team_band": "6B_8_9_10",
         "infrastructure": "cloud",
         "has_mq": False,
         "has_custom_plugins": True,
@@ -82,7 +79,6 @@ SAMPLE_PROJECTS = [
         "source_version": "IIB_v10",
         "target_version": "ACE_v12",
         "flow_count": 120,
-        "team_band": "6B_8_9_10",
         "infrastructure": "container",
         "has_mq": True,
         "has_custom_plugins": True,
@@ -101,8 +97,7 @@ SAMPLE_PROJECTS = [
         "source_version": "IIB_v10",
         "target_version": "ACE_v12",
         "flow_count": 50,
-        "team_band": "6G",
-        "infrastructure": "vmware",
+        "infrastructure": "on_premise",
         "has_mq": False,
         "has_custom_plugins": False,
         "estimated_days": 28,
@@ -119,7 +114,6 @@ SAMPLE_PROJECTS = [
         "source_version": "ACE_v11",
         "target_version": "ACE_v12",
         "flow_count": 200,
-        "team_band": "6B_8_9_10",
         "infrastructure": "container",
         "has_mq": True,
         "has_custom_plugins": False,
@@ -153,7 +147,7 @@ async def seed_database():
                 project_id = await vector_db_service.add_project(project)
                 print(f"✓ Successfully added project: {project_id}")
                 print(f"  - Source: {project['source_version']} → Target: {project['target_version']}")
-                print(f"  - Flows: {project['flow_count']}, Team: {project['team_band']}")
+                print(f"  - Flows: {project['flow_count']}")
                 print(f"  - Estimated: {project['estimated_days']} days, Actual: {project['actual_days']} days")
             except Exception as e:
                 print(f"✗ Error adding project: {str(e)}")

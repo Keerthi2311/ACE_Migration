@@ -32,12 +32,20 @@ class ComponentBreakdown(BaseModel):
 
 
 class FlowMigrationBreakdown(BaseModel):
-    """Flow migration time breakdown"""
-    base_time: float = Field(..., description="Base migration time")
-    buffer: float = Field(..., description="Buffer time for unforeseen issues")
+    """Flow migration time breakdown (DEPRECATED - kept for backward compatibility)"""
+    base_time: float = Field(default=0, description="Base migration time")
+    buffer: float = Field(default=0, description="Buffer time for unforeseen issues")
     total: float = Field(..., description="Total flow migration time")
     flows: int = Field(..., description="Number of flows")
-    team_band: str = Field(..., description="Team band classification")
+
+
+class MigrationExecutionBreakdown(BaseModel):
+    """Migration execution time breakdown (migration + testing)"""
+    total: float = Field(..., description="Total migration execution time")
+    flows: int = Field(..., description="Number of flows")
+    flows_per_batch: int = Field(default=5, description="Flows per batch")
+    days_per_batch: int = Field(default=2, description="Days per batch")
+    rate_description: str = Field(default="Universal rate: 5 flows per 2 days", description="Rate description")
 
 
 class EnvironmentSetupBreakdown(BaseModel):

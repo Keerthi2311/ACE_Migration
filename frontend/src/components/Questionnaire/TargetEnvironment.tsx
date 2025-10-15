@@ -42,8 +42,7 @@ export default function TargetEnvironment() {
           defaultValue={formData.target_environment?.platform || ''}
         >
           <SelectItem value="" text="Select platform" />
-          <SelectItem value="physical" text="Physical Server" />
-          <SelectItem value="vmware" text="VMware" />
+          <SelectItem value="on_premise" text="On-Premise" />
           <SelectItem value="cloud" text="Cloud (AWS/Azure/IBM Cloud)" />
           <SelectItem value="container" text="Container/Kubernetes" />
         </Select>

@@ -45,12 +45,6 @@ async def validate_question(request: ValidationRequest):
             elif isinstance(request.answer, int) and request.answer > 1000:
                 warnings.append("Large flow count detected - ensure accurate count")
         
-        elif request.question_id == 'team_band':
-            valid_bands = ['6G', '6B_8_9_10']
-            if request.answer not in valid_bands:
-                is_valid = False
-                warnings.append(f"Team band must be one of: {', '.join(valid_bands)}")
-        
         return ValidationResponse(
             is_valid=is_valid,
             suggestions=suggestions,

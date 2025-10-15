@@ -70,7 +70,6 @@ export interface GeneralInfo {
   customer_performs_testing: boolean;
   testing_approach: string[];
   ibm_assistance_needed: string[];
-  team_band: '6G' | '6B_8_9_10';
 }
 
 // Complete Questionnaire

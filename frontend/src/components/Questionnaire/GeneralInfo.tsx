@@ -1,7 +1,5 @@
 import { useFormContext } from 'react-hook-form';
 import {
-  Select,
-  SelectItem,
   Checkbox,
   FormLabel,
   Stack,
@@ -10,30 +8,16 @@ import type { Questionnaire } from '../../services/types';
 import './GeneralInfo.scss';
 
 export default function GeneralInfo() {
-  const { register, watch } = useFormContext<Questionnaire>();
-  const formData = watch();
+  const { register } = useFormContext<Questionnaire>();
 
   return (
     <div className="general-info-form">
       <h3>General Information</h3>
       <p className="form-description">
-        Tell us about your team and migration approach
+        Tell us about your migration approach and requirements
       </p>
 
       <Stack gap={6}>
-        {/* Team Band */}
-        <Select
-          id="team-band"
-          labelText="Team Band/Level"
-          helperText="Select the band level of the team performing the migration"
-          {...register('general_info.team_band')}
-          defaultValue={formData.general_info?.team_band || ''}
-        >
-          <SelectItem value="" text="Select team band" />
-          <SelectItem value="6G" text="Band 6G (Junior)" />
-          <SelectItem value="6B_8_9_10" text="Band 6B/8/9/10 (Mid-Senior)" />
-        </Select>
-
         {/* Migration Drivers */}
         <div className="checkbox-group">
           <FormLabel>Migration Drivers (Select all that apply)</FormLabel>

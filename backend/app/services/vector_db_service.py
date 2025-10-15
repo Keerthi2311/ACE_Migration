@@ -98,7 +98,6 @@ class VectorDBService:
             f"Migration from {project.get('source_version', 'Unknown')} to {project.get('target_version', 'Unknown')}",
             f"Flow count: {project.get('flow_count', 0)}",
             f"Infrastructure: {project.get('infrastructure', 'Unknown')}",
-            f"Team band: {project.get('team_band', 'Unknown')}",
             f"Has MQ: {project.get('has_mq', False)}",
             f"Custom plugins: {project.get('has_custom_plugins', False)}",
             f"Complexity score: {project.get('complexity_score', 5.0)}"

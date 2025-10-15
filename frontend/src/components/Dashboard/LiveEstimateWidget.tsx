@@ -23,8 +23,7 @@ export default function LiveEstimateWidget({ questionnaireData }: LiveEstimateWi
     const fetchEstimate = async () => {
       // Only fetch if we have minimal data
       const hasMinimalData =
-        questionnaireData.source_environment?.total_flows &&
-        questionnaireData.general_info?.team_band;
+        questionnaireData.source_environment?.total_flows;
 
       if (!hasMinimalData) {
         return;

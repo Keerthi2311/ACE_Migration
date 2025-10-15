@@ -69,8 +69,7 @@ async def assess_risks(questionnaire_data: Dict[str, Any]):
             'flow_count': source.get('total_flows'),
             'infrastructure': target.get('host_platform'),
             'has_mq': source.get('has_mq'),
-            'has_custom_plugins': source.get('has_custom_plugins'),
-            'team_band': general.get('team_band')
+            'has_custom_plugins': source.get('has_custom_plugins')
         }
         
         # Get risk assessment
@@ -110,11 +109,11 @@ async def get_collection_stats():
 @router.get("/insights")
 async def get_insights(
     flow_count: int = Query(..., ge=1),
-    team_band: str = Query(...),
     has_custom_plugins: bool = Query(False)
 ):
     """
     Get AI-generated insights for given parameters.
+    NO TEAM BAND - insights based on project complexity only.
     """
     try:
         insights = []
@@ -136,13 +135,14 @@ async def get_insights(
                 "icon": "code"
             })
         
-        if team_band == "6G":
-            insights.append({
-                "title": "Senior Team Band",
-                "message": "Band 6G timeline allows for more thorough migration and testing",
-                "severity": "info",
-                "icon": "info"
-            })
+        # Universal rate applies to all projects
+        estimated_days = (flow_count / 5) * 2
+        insights.append({
+            "title": "Universal Estimation Rate",
+            "message": f"Estimated {estimated_days} days for {flow_count} flows at universal rate (5 flows per 2 days)",
+            "severity": "info",
+            "icon": "info"
+        })
         
         return insights
         
